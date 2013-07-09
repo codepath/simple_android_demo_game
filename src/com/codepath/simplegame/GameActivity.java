@@ -1,4 +1,4 @@
-package com.codepath.examples.simplepushergame;
+package com.codepath.simplegame;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.codepath.examples.simplepushergame.MyGamePanel;
+import com.codepath.examples.simplepushergame.R;
 
 public class GameActivity extends Activity {
 	private static final String TAG = GameActivity.class.getSimpleName();
@@ -19,7 +22,7 @@ public class GameActivity extends Activity {
 	 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 	 		WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	 	// set our MainGamePanel as the View
-	 	setContentView(new MainGamePanel(this));
+	 	setContentView(new MyGamePanel(this));
 	 	Log.d(TAG, "View added");
 	}
 	
