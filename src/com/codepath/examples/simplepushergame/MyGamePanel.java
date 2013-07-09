@@ -39,7 +39,7 @@ public class MyGamePanel extends AbstractGamePanel {
 		drawScore(canvas);
 	}
 
-	// This method is called once a second, and it is a good place to
+	// This method is called once a "tick", and it is a good place to
 	// implement the game logic.
 	public void onTimer() {
 		prize.update(this);
