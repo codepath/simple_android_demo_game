@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -74,7 +73,6 @@ public class MyGamePanel extends AbstractGamePanel {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		Log.d(TAG, event.getX() + ", " + event.getY());
 		for (Draggable actor : actors) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				// delegating event handling to the player
