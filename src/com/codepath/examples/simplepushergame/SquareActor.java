@@ -1,19 +1,17 @@
 package com.codepath.examples.simplepushergame;
 
-import com.codepath.simplegame.Draggable;
-import com.codepath.simplegame.actors.SimpleMovingActor;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.codepath.simplegame.Draggable;
+import com.codepath.simplegame.actors.SimpleMovingActor;
+
 public class SquareActor extends SimpleMovingActor implements Draggable {
-	private boolean touched; // if droid is touched/picked up
-	private boolean alive;
+	private boolean touched; // if actor is picked up
 
 	public SquareActor(int x, int y) {
-		super(x, y, 65, 65);
-		alive = true;
+		super(x, y, 50, 50);
 	}
 
 	@Override
@@ -27,14 +25,6 @@ public class SquareActor extends SimpleMovingActor implements Draggable {
 	public boolean isTouched() {
 		return touched;
 	}
-	
-	public void setAlive(boolean alive) {
-		this.alive = alive;
-	}
-	
-	public boolean isAlive() {
-		return this.alive;
-	}
 
 	public void setTouched(boolean touched) {
 		this.touched = touched;
@@ -42,9 +32,7 @@ public class SquareActor extends SimpleMovingActor implements Draggable {
 
 	@Override
 	public void draw(Canvas canvas) {
-		if (isAlive()) {
-			canvas.drawRect(getRect(), getPaint());
-		}
+	  canvas.drawRect(getRect(), getPaint());
 	}
 
 	public void handleActionDown(int eventX, int eventY) {

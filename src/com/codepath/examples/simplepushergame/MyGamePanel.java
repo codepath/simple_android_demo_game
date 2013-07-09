@@ -5,19 +5,18 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.codepath.simplegame.AbstractGamePanel;
-import com.codepath.simplegame.Draggable;
-import com.codepath.simplegame.actors.Actor;
 
 public class MyGamePanel extends AbstractGamePanel {
 
 	SquareActor player;
-	BotActor bot;
-	EnemyActor enemy;
-	ArrayList<Draggable> actors;
+	ArrayList<SquareActor> otherPlayers;
+	PrizeActor prize;
+	int score = 0;
 
 	public MyGamePanel(Context context) {
 		super(context);
@@ -26,12 +25,8 @@ public class MyGamePanel extends AbstractGamePanel {
 	// This method is called when the game first launches. Use this to
 	// initialize variables and set starting values.
 	public void onStart() {
-		player = new SquareActor(10, 10);
-		bot = new BotActor(getContext(), 100, 100);
-		actors = new ArrayList<Draggable>();
-		actors.add(player);
-		actors.add(bot);
-		enemy = new EnemyActor(getWidth() / 2, getHeight() / 2, 65, 65);
+		player = new SquareActor(50, 50);
+		prize = new PrizeActor(200, 200);
 	}
 
 	// This method is called once a "tick" to redraw the canvas,
@@ -39,23 +34,18 @@ public class MyGamePanel extends AbstractGamePanel {
 	// Images: canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),
 	// R.drawable.droid_1), 10, 10, null);
 	public void redrawCanvas(Canvas canvas) {
-		enemy.draw(canvas);
-		for (Draggable actor : actors) {
-			((Actor) actor).draw(canvas);
-		}
-		if (!player.isAlive()) {
-			getPaint().setColor(Color.BLACK);
-			getPaint().setTextSize(30);
-			canvas.drawText("Game Over!", 200, getHeight() / 2, getPaint());
-		}
+		prize.draw(canvas);
+		player.draw(canvas);
+		drawScore(canvas);
 	}
 
 	// This method is called once a second, and it is a good place to
 	// implement the game logic.
 	public void onTimer() {
-		enemy.move(this);
-		if (enemy.intersect(player)) {
-			player.setAlive(false);
+		prize.update(this);
+		if (prize.intersect(player)) {
+			score += 100;
+			prize.respawn(this);
 		}
 	}
 
@@ -65,36 +55,39 @@ public class MyGamePanel extends AbstractGamePanel {
 	// i.e keyCode == KeyEvent.KEYCODE_N
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_N) {
-			player.setAlive(true);
-		}
+		// ...
 		return false;
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		for (Draggable actor : actors) {
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				// delegating event handling to the player
-				actor.handleActionDown((int) event.getX(), (int) event.getY());
+		Log.d("GameActivity", event.getX() + ", " + event.getY());
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			// delegating event handling to the player
+			player.handleActionDown((int) event.getX(), (int) event.getY());
+		}
+		if (event.getAction() == MotionEvent.ACTION_MOVE) {
+			// the gestures
+			if (player.isTouched() && event.getX() < (getWidth() - player.getWidth())
+					&& event.getY() < (getHeight() - player.getHeight())) {
+				// the player was picked up and is being dragged
+				player.setX((int) event.getX());
+				player.setY((int) event.getY());
 			}
-			if (event.getAction() == MotionEvent.ACTION_MOVE) {
-				// the gestures
-				if (actor.isTouched() && event.getX() < (getWidth() - actor.getWidth())
-						&& event.getY() < (getHeight() - actor.getHeight())) {
-					// the player was picked up and is being dragged
-					actor.setX((int) event.getX());
-					actor.setY((int) event.getY());
-				}
-			}
-			if (event.getAction() == MotionEvent.ACTION_UP) {
-				// touch was released
-				if (actor.isTouched()) {
-					actor.setTouched(false);
-				}
+		}
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			// touch was released
+			if (player.isTouched()) {
+				player.setTouched(false);
 			}
 		}
 		return true;
+	}
+	
+	private void drawScore(Canvas canvas) {
+		getPaint().setColor(Color.BLACK);
+		getPaint().setTextSize(20);
+		canvas.drawText("Score: " + score, 20, 20, getPaint());
 	}
 
 }
